@@ -19,10 +19,7 @@ class MoveListener implements Listener
     public function __construct(CrazyBlock $mod) {
         $this->mod = $mod;
         $this->plugin = $mod->getWTask();
-        try {
-            $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
-        } catch (\Throwable $e) {
-        }
+        $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
         $this->plugin->getServer()->getLogger()->info("成功创建移动监听器！");
     }
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace BlueWhale\WTask\Mods\CrazyNPC\Entities;
 
 use pocketmine\entity\Entity;
@@ -9,7 +8,7 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\protocol\AddPlayerPacket;
 use pocketmine\Player;
-use pocketmine\network\protocol\ProtocolInfo as PInfo;
+use pocketmine\network\protocol\Info as PInfo;
 use pocketmine\utils\TextFormat;
 
 class CrazyHuman extends Human
@@ -46,7 +45,7 @@ class CrazyHuman extends Human
             if (!isset($this->namedtag->Scale)) {
                 $this->namedtag->Scale = new FloatTag("Scale", 1.0);
             }
-            $this->setScale($this->namedtag->Scale->getValue());
+            $this->setDataProperty(self::DATA_SCALE, self::DATA_TYPE_FLOAT, $this->namedtag->Scale->getValue());
         }
     }
 
@@ -61,7 +60,7 @@ class CrazyHuman extends Human
 
         }
         if (PInfo::CURRENT_PROTOCOL > 90) {
-            $scale = $this->getDataPropertyManager()->getPropertyType(Entity::DATA_SCALE);
+            $scale = $this->getDataProperty(Entity::DATA_SCALE);
             $this->namedtag->Scale = new FloatTag("Scale", $scale);
         }
 
@@ -86,10 +85,11 @@ class CrazyHuman extends Human
             $pk->yaw = $this->yaw;
             $pk->pitch = $this->pitch;
             $pk->item = $this->getInventory()->getItemInHand();
+            $pk->metadata = $this->dataProperties;
             $pk->metadata[self::DATA_NAMETAG] = [self::DATA_TYPE_STRING, $this->getDisplayName($player)];
             $player->dataPacket($pk);
-            $this->armorInventory->setContents([]);
-            $player->server->updatePlayerListData($uuid, $entityId, $this->namedtag["MenuName"] ?? "", $this->skin, $this->skin, [$player]);
+            $this->inventory->sendArmorContents($player);
+            $player->server->updatePlayerListData($uuid, $entityId, $this->namedtag["MenuName"] ?? "", $this->skinId, $this->skin, [$player]);
             if ($this->namedtag["MenuName"] === "") {
                 $player->server->removePlayerListData($uuid, [$player]);
             }

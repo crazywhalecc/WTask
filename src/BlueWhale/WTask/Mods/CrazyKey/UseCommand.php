@@ -20,15 +20,10 @@ class UseCommand extends Command
         $this->cmd = $desc["command"];
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)//解析
+    public function execute(CommandSender $sender, $label, array $args)//解析
     {
-        if (method_exists($this, "scanPermission")) {
-            if (!$this->scanPermission($sender))
-                return false;
-        } elseif (method_exists($this, "testPermission")) {
-            if (!$this->testPermission($sender))
-                return false;
-        }
+        if (!$this->testPermission($sender))
+            return false;
         if (isset($args[0])) {
             $code = $args[0];
             $check = $this->mod->checkCode($code);

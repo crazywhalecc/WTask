@@ -26,10 +26,7 @@ class WProtect extends ModBase implements Listener
         $this->plugin = $this->getWTask();
         $desc = $this->getWTask()->getModule("WProtect");
         $this->getCommandMap()->register("WTask", new WProtectCommand($this, $desc));
-        try {
-            $this->getWTask()->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
-        } catch (\Throwable $e) {
-        }
+        $this->getWTask()->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
         @mkdir($this->plugin->getDataFolder() . "Mods/WProtect/");
         $this->config = new Config($this->plugin->getDataFolder() . "Mods/WProtect/" . "config.yml", Config::YAML, array(
             "worlds" => array(),

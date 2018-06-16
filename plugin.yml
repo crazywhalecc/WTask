@@ -13,8 +13,8 @@ api:
 - 3.0.2
 author: 鲸鱼-Whale
 main: BlueWhale\WTask\WTask
-version: 3.3.1
-softdepend: ["EconomyAPI"]
+version: 3.1.5
+softdepend: ["ZXDAKernel","EconomyAPI"]
 
 permissions:
   wtask.command.wtask:

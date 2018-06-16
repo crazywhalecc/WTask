@@ -19,10 +19,7 @@ class EntityDamageListener implements Listener, TaskListener
     public function __construct(WTaskAPI $api, array $task, string $tn) {
         $this->api = $api;
         $this->plugin = $api->plugin;
-        try {
-            $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
-        } catch (\Throwable $e) {
-        }
+        $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
         $this->task = $task;
         $this->tn = $tn;
     }

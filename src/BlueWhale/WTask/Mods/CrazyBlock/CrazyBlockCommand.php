@@ -35,16 +35,11 @@ class CrazyBlockCommand extends Command
         );
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
+    public function execute(CommandSender $sender, $label, array $args) {
         if (!$this->mod->getWTask()->isEnabled())
             return false;
-        if (method_exists($this, "scanPermission")) {
-            if (!$this->scanPermission($sender))
-                return false;
-        } elseif (method_exists($this, "testPermission")) {
-            if (!$this->testPermission($sender))
-                return false;
-        }
+        if (!$this->testPermission($sender))
+            return false;
         if (isset($args[0])) {
             switch ($args[0]) {
                 case "touch":

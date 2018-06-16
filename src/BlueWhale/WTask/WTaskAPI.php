@@ -6,9 +6,12 @@ use BlueWhale\extension\IP;
 use pocketmine\command\CommandSender;
 use pocketmine\Server;
 use pocketmine\Player;
+use pocketmine\entity\Entity;
+use BlueWhale\WMailer\PHPMailer\PHPMailer;
 
 use onebone\economyapi\EconomyAPI;
 
+use pocketmine\network\protocol\Info as ProtocolInfo;
 use pocketmine\utils\TextFormat;
 
 class WTaskAPI
@@ -19,9 +22,14 @@ class WTaskAPI
 
     public $plugin;
 
-    public function __construct(WTask $plugin) {//构建
+    public function __construct(WTask $plugin)//构建
+    {
         $this->plugin = $plugin;
         self::$obj = $this;
+    }
+
+    function mail() {
+        PHPMailer::rfcDate();
     }
 
     public function getWTask() {
@@ -287,8 +295,8 @@ class WTaskAPI
             case "false":
                 return false;
             case "once":
-                $finish[$tn][$name] = array(
-                    "cid" => $p->getUniqueId(),
+                $finmish[$tn][$name] = array(
+                    "cid" => $p->getClientId(),
                     "date" => date("d"),
                     "times" => 1
                 );
@@ -297,7 +305,7 @@ class WTaskAPI
                 if (isset($finish[$tn][$name])) {
                     if ($finish[$tn][$name]["date"] != date("d")) {
                         $finish[$tn][$name] = array(
-                            "cid" => $p->getUniqueId(),
+                            "cid" => $p->getClientId(),
                             "date" => date("d"),
                             "times" => 1
                         );
@@ -306,7 +314,7 @@ class WTaskAPI
                     break;
                 } else {
                     $finish[$tn][$name] = array(
-                        "cid" => $p->getUniqueId(),
+                        "cid" => $p->getClientId(),
                         "date" => date("d"),
                         "times" => 1
                     );
@@ -319,7 +327,7 @@ class WTaskAPI
                 } else {
                     $finish[$tn][$name]["date"] = time();
                     $finish[$tn][$name]["times"] = $mode[1];
-                    $finish[$tn][$name]["cid"] = $p->getUniqueId();
+                    $finish[$tn][$name]["cid"] = $p->getClientId();
                     break;
                 }
             case "limit-time":
@@ -327,7 +335,7 @@ class WTaskAPI
                     $finish[$tn][$name]["times"]++;
                     break;
                 } else {
-                    $finish[$tn][$name]["cid"] = $p->getUniqueId();
+                    $finish[$tn][$name]["cid"] = $p->getClientId();
                     $finish[$tn][$name]["times"] = 1;
                     $finish[$tn][$name]["date"] = time();
                     break;
@@ -521,7 +529,7 @@ class WTaskAPI
                         return true;
                     case "加经验等级":
                     case "addexplevel":
-                        $t->player->addXpLevels($this->executeReturnData($curDat[1], $t->player));
+                        $t->player->addXpLevel($this->executeReturnData($curDat[1], $t->player));
                         return true;
                     case "加经验":
                     case "addexp":
@@ -536,16 +544,12 @@ class WTaskAPI
                     case "穿鞋":
                         $item = $this->executeReturnData($curDat[1], $t->player);
                         $item = $t->executeItem($item);
-                        if (method_exists($t->player, "getArmorInventory"))
-                            $t->player->getArmorInventory()->setBoots($item);
-                        else $t->player->getInventory()->setBoots($item);
+                        $t->player->getInventory()->setBoots($item);
                         return true;
                     case "穿裤":
                         $item = $this->executeReturnData($curDat[1], $t->player);
                         $item = $t->executeItem($item);
-                        if (method_exists($t->player, "getArmorInventory"))
-                            $t->player->getArmorInventory()->setLeggings($item);
-                        else $t->player->getInventory()->setLeggings($item);
+                        $t->player->getInventory()->setLeggings($item);
                         return true;
                     case "kick":
                         $t->player->kick();
@@ -556,22 +560,23 @@ class WTaskAPI
                     case "穿衣":
                         $item = $this->executeReturnData($curDat[1], $t->player);
                         $item = $t->executeItem($item);
-                        if (method_exists($t->player, "getArmorInventory"))
-                            $t->player->getArmorInventory()->setChestplate($item);
-                        else $t->player->getInventory()->setChestplate($item);
+                        $t->player->getInventory()->setChestplate($item);
                         return true;
                     case "戴头盔":
                         $item = $this->executeReturnData($curDat[1], $t->player);
                         $item = $t->executeItem($item);
-                        if (method_exists($t->player, "getArmorInventory"))
-                            $t->player->getArmorInventory()->setHelmet($item);
-                        else $t->player->getInventory()->setHelmet($item);
+                        $t->player->getInventory()->setHelmet($item);
                         return true;
                     case "皮肤伪装":
                         return $t->setCustomSkin($curDat[1]);
                     case "设置大小":
                         $item = $this->executeReturnData($curDat[1], $t->player);
-                        $t->player->setScale($item);
+                        if (ProtocolInfo::CURRENT_PROTOCOL >= 91) {
+                            $t->player->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, $item);
+                        } else {
+                            Server::getInstance()->getLogger()->notice("你的服务器版本不是0.16以上，不能使用0.16以上的新特性！");
+                            return false;
+                        }
                         return true;
                     case "设置权限":
                         if (!$this->plugin instanceof WTask)
@@ -837,21 +842,21 @@ class WTaskAPI
                         $itemheld = $p->getInventory()->getItemInHand()->getCount();
                         return $itemheld;
                     case "鞋子id":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getBoots()->getId() : $p->getInventory()->getBoots()->getId();
+                        return $p->getInventory()->getBoots()->getId();
                     case "鞋子damage":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getBoots()->getDamage() : $p->getInventory()->getBoots()->getDamage();
+                        return $p->getInventory()->getBoots()->getDamage();
                     case "裤子id":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getLeggings()->getId() : $p->getInventory()->getLeggings()->getId();
+                        return $p->getInventory()->getLeggings()->getId();
                     case "裤子damage":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getLeggings()->getDamage() : $p->getInventory()->getLeggings()->getDamage();
+                        return $p->getInventory()->getLeggings()->getDamage();
                     case "衣服id":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getChestplate()->getId() : $p->getInventory()->getChestplate()->getId();
+                        return $p->getInventory()->getChestplate()->getId();
                     case "衣服damage":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getChestplate()->getDamage() : $p->getInventory()->getChestplate()->getDamage();
+                        return $p->getInventory()->getChestplate()->getDamage();
                     case "头盔id":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getHelmet()->getId() : $p->getInventory()->getHelmet()->getId();
+                        return $p->getInventory()->getHelmet()->getId();
                     case "头盔damage":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getHelmet()->getDamage() : $p->getInventory()->getHelmet()->getDamage();
+                        return $p->getInventory()->getHelmet()->getDamage();
                     case "金钱":
                         return EconomyAPI::getInstance()->myMoney($p);
                     case "名字":
@@ -1195,5 +1200,12 @@ class WTaskAPI
         } else {
             return false;
         }
+    }
+
+    /**
+     *
+     */
+    function call() {
+        $this->call();
     }
 }

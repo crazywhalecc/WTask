@@ -22,7 +22,7 @@ class EventPacket extends DataPacket
     public function decode() { }
 
     public function encode() {
-        $this->putEntityRuntimeId($this->eid);
+        $this->putEntityId($this->eid);
         $this->putVarInt($this->varint1);
         $this->putByte($this->state);
         switch ($this->state) {

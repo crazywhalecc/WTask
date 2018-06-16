@@ -1,5 +1,4 @@
 <?php
-
 namespace BlueWhale\WTask\Mods\CrazyNPC\Entities;
 
 use pocketmine\entity\Entity;
@@ -8,10 +7,9 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
-use pocketmine\network\protocol\ProtocolInfo as PInfo;
-use pocketmine\utils\TextFormat;
+use pocketmine\network\protocol\Info as PInfo;
 
-class CrazyEntity extends Entity
+class CrazyEntity extends Entity 
 {
     public $offset = 0;
     public $entityId = 0;
@@ -54,8 +52,8 @@ class CrazyEntity extends Entity
             if (!isset($this->namedtag->Scale)) {
                 $this->namedtag->Scale = new FloatTag("Scale", 1.0);
             }
-            $this->setScale($this->namedtag->Scale->getValue());
-            //$this->setDataProperty(self::DATA_BOUNDING_BOX_HEIGHT, self::DATA_TYPE_FLOAT, $this->offsets[$this->entityId]);
+            $this->setDataProperty(self::DATA_SCALE, self::DATA_TYPE_FLOAT, $this->namedtag->Scale->getValue());
+            $this->setDataProperty(self::DATA_BOUNDING_BOX_HEIGHT, self::DATA_TYPE_FLOAT, $this->offsets[$this->entityId]);
         }
     }
 
@@ -69,7 +67,7 @@ class CrazyEntity extends Entity
             }
         }
         if (PInfo::CURRENT_PROTOCOL > 90) {
-            $scale = $this->getDataPropertyManager()->getPropertyType(Entity::DATA_SCALE);
+            $scale = $this->getDataProperty(Entity::DATA_SCALE);
             $this->namedtag->Scale = new FloatTag("Scale", $scale);
         }
         $this->namedtag->NameVisibility = new IntTag("NameVisibility", $visibility);
@@ -77,21 +75,21 @@ class CrazyEntity extends Entity
 
     public function spawnTo(Player $player) {
         $pk = new AddEntityPacket();
-        $pk->id = $this->getId();
+        $pk->eid = $this->getId();
         $pk->type = $this->entityId;
         $pk->x = $this->x;
         $pk->y = $this->y + $this->offset;
         $pk->z = $this->z;
         $pk->yaw = $this->yaw;
         $pk->pitch = $this->pitch;
-        $pk->metadata = $this->changedDataProperties;
+        $pk->metadata = $this->dataProperties;
         $pk->metadata[self::DATA_NAMETAG] = [self::DATA_TYPE_STRING, $this->getDisplayName($player)];
         $player->dataPacket($pk);
         parent::spawnTo($player);
     }
 
     public function getDisplayName(Player $player) {
-        return str_ireplace(["{name}", "{display_name}", "{nametag}"], [$player->getName(), $player->getDisplayName(), $player->getNametag()], $player->isOp() ? $this->getNameTag() . "\n" . TextFormat::GREEN . "NPC ID: " . $this->getId() : $this->getNameTag());
+        return str_ireplace(["{name}", "{display_name}", "{nametag}"], [$player->getName(), $player->getDisplayName(), $player->getNametag()], $player->isOp() ? $this->getNameTag() . "\n" . \pocketmine\utils\TextFormat::GREEN . "NPC ID: " . $this->getId() : $this->getNameTag());
     }
 
 }

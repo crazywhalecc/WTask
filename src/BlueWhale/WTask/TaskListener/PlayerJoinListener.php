@@ -17,10 +17,7 @@ class PlayerJoinListener implements Listener, TaskListener
     public function __construct(WTaskAPI $api, array $task, string $tn) {
         $this->api = $api;
         $this->plugin = $api->plugin;
-        try {
-            $this->plugin->getServer()->getPluginManager()->registerEvents($this, $api->plugin);
-        } catch (\Throwable $e) {
-        }
+        $this->plugin->getServer()->getPluginManager()->registerEvents($this, $api->plugin);
         $this->task = $task;
         $this->tn = $tn;
     }

@@ -31,9 +31,8 @@ class MainCommand extends Command
         $this->cmd = $desc["command"];
         $c = $this->cmd;
         $this->ids = 0;
-        $this->cmdHelp[0] = "§6======WTask主菜单(§a1 §6/ §e3§6)======
-§7*  当前版本: " . $this->plugin->getWTaskVersion() . "
-§7*  翻页: /" . $this->cmd . " help [页数]
+        $this->cmdHelp[0] = "§6======WTask主菜单(§a1 §6/ §e3§6)======§7*  当前版本: " . $this->plugin->getWTaskVersion() .
+            "§7*  翻页: /" . $this->cmd . " help [页数]
 §e*  输入/wtask info 来查看当前版本的更新日志哦～
 §a/" . $c . " 添加任务: §b添加一个普通型任务
 §a/" . $c . " reload: §b重新载入所有内容
@@ -66,17 +65,12 @@ class MainCommand extends Command
         }
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)//解析
+    public function execute(CommandSender $sender, $label, array $args)//解析
     {
         if (!$this->plugin->isEnabled())
             return false;
-        if (method_exists($this, "scanPermission")) {
-            if (!$this->scanPermission($sender))
-                return false;
-        } elseif (method_exists($this, "testPermission")) {
-            if (!$this->testPermission($sender))
-                return false;
-        }
+        if (!$this->testPermission($sender))
+            return false;
         if (isset($args[0])) {
             switch ($args[0]) {
                 case "添加任务":
@@ -225,7 +219,6 @@ class MainCommand extends Command
                             case "玩家传送":
                             case "玩家攻击玩家":
                             case "玩家加入":
-                            case "玩家移动":
                                 if (isset($args[2])) {
                                     $name = $args[2];
                                     $result = $this->api->addActTask($type, $name, "true");
@@ -362,7 +355,7 @@ class MainCommand extends Command
                         return true;
                     }
                 case "info":
-                    $sender->sendMessage("§6===============\n§b*    WTask    *\n§eTwitter: @BlockForWhale\n§a鲸鱼QQ: 627577391\n§d插件页面: pl.zxda.net/plugins/807.html\n§6===============");
+                    $sender->sendMessage("§6===============\n§b*    WTask    *\n§eTwitter: @BlockForWhale\n§a鲸鱼QQ: 627577391\n§d插件页面: pl.zxda.net/plugins/532.html\n§6===============");
                     $sender->sendMessage("§e当前版本更新日志：" . $this->plugin->getWTaskVersion());
                     $sender->sendMessage("§b" . $this->plugin->getUpdateInfo());
                     return true;

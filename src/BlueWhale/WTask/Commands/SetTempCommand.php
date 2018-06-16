@@ -28,17 +28,12 @@ class SetTempCommand extends Command
         $this->mytype = $desc["setting"];
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)//解析
+    public function execute(CommandSender $sender, $label, array $args)//解析
     {
         if (!$this->plugin->isEnabled())
             return false;
-        if (method_exists($this, "scanPermission")) {
-            if (!$this->scanPermission($sender))
-                return false;
-        } elseif (method_exists($this, "testPermission")) {
-            if (!$this->testPermission($sender))
-                return false;
-        }
+        if (!$this->testPermission($sender))
+            return false;
         if (isset($args[0]) && isset($args[1])) {
             $tempname = $args[0];
             $i = 1;

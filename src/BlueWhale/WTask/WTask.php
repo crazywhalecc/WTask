@@ -17,7 +17,7 @@ namespace BlueWhale\WTask;
 use BlueWhale\WTask\Mods\ModBase;
 use BlueWhale\WTask\Mods\ModManager;
 use pocketmine\command\CommandSender;
-use pocketmine\network\mcpe\protocol\TextPacket;
+use pocketmine\network\protocol\TextPacket;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Player;
@@ -29,10 +29,9 @@ use pocketmine\command\ConsoleCommandSender;
 use BlueWhale\WTask\ScheduleTasks\CallbackTask;
 use BlueWhale\WTask\Commands\CustomCommand;
 use BlueWhale\WTask\TaskListener\{
-    PlayerJoinListener, PlayerMoveListener, PlayerRespawnListener,
-    TaskListener, BlockBreakListener, BlockPlaceListener,
-    PlayerInteractListener, PlayerDeathListener, PlayerDropItemListener,
-    PlayerChatListener, PlayerCommandActivateListener,
+    PlayerJoinListener, TaskListener, BlockBreakListener,
+    BlockPlaceListener, PlayerInteractListener, PlayerDeathListener,
+    PlayerDropItemListener, PlayerChatListener, PlayerCommandActivateListener,
     PlayerTeleportListener, EntityDamageListener
 };
 
@@ -97,9 +96,12 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
     public $path = null;
     public $taskPath = null;
 
+    public function __construct() {
+        $this->api = new WTaskAPI($this);
+    }
+
     public function onLoad()//加载
     {
-        $this->api = new WTaskAPI($this);
         $this->getServer()->getLoader()->addPath("plugins/extMods/");
         self::$obj = $this;
         $this->path = $this->getDataFolder();
@@ -136,10 +138,10 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
                 continue;
             $tn = $this->api->prepareTask($taskName);
             switch ($taskIn["actType"]) {
-                case "破坏方块"://
+                case "破坏方块":
                     $this->actTaskListener[$taskName] = new BlockBreakListener($this->api, $tn, $taskName);
                     break;
-                case "放置方块"://
+                case "放置方块":
                     $this->actTaskListener[$taskName] = new BlockPlaceListener($this->api, $tn, $taskName);
                     //echo "超级棒@\n";
                     break;
@@ -152,26 +154,20 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
                 case "玩家丢弃物品":
                     $this->actTaskListener[$taskName] = new PlayerDropItemListener($this->api, $tn, $taskName);
                     break;
-                case "玩家输入指令"://
+                case "玩家输入指令":
                     $this->actTaskListener[$taskName] = new PlayerCommandActivateListener($this->api, $tn, $taskName);
                     break;
-                case "玩家聊天"://
+                case "玩家聊天":
                     $this->actTaskListener[$taskName] = new PlayerChatListener($this->api, $tn, $taskName);
                     break;
                 case "玩家传送":
                     $this->actTaskListener[$taskName] = new PlayerTeleportListener($this->api, $tn, $taskName);
                     break;
-                case "玩家攻击玩家"://
+                case "玩家攻击玩家":
                     $this->actTaskListener[$taskName] = new EntityDamageListener($this->api, $tn, $taskName);
                     break;
                 case "玩家加入":
                     $this->actTaskListener[$taskName] = new PlayerJoinListener($this->api, $tn, $taskName);
-                    break;
-                case "玩家移动":
-                    $this->actTaskListener[$taskName] = new PlayerMoveListener($this->api, $tn, $taskName);
-                    break;
-                case "玩家重生":
-                    $this->actTaskListener[$taskName] = new PlayerRespawnListener($this->api, $tn, $taskName);
                     break;
                 default:
                     $this->getServer()->getLogger()->warning("动作任务 $taskName 错误！ 未知的监听类型！");
@@ -323,7 +319,7 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
             $this->customFunction = new Config($this->path . "customFunction.yml", Config::YAML, array());
         }
         $this->playerPerm = new Config($this->path . "permissions.yml", Config::YAML, array());
-        $this->commands = new Config($this->path . "command.json", Config::JSON, array(
+        $this->commands = new Config($this->path . "Commands.json", Config::JSON, array(
             "MainCommand" => array(
                 "command" => "wtask",
                 "description" => "§6WTask设置的主命令",
@@ -846,24 +842,24 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
 
     public function getUpdateInfo() {
         $v = $this->getWTaskVersion();
-        if (file_exists($this->path . "update.yml"))
-            @unlink($this->path . "update.yml");
-        $this->saveResource("update.yml");
-        $cfg = new Config($this->getDataFolder() . "update.yml", Config::YAML, array());
+        if (file_exists($this->path . "update.cc"))
+            @unlink($this->path . "update.cc");
+        $this->saveResource("update.cc");
+        $cfg = new Config($this->getDataFolder() . "update.cc", Config::YAML, array());
         if (!$cfg->exists($v)) {
             return "暂无更新日志";
         } else {
             return implode("\n", $cfg->get($v));
         }
         /*
-        $file = fopen($this->path."update.yml","r");
+        $file = fopen($this->path."update.cc","r");
         $line=[];
         while(!feof($file))
         {
             echo $line[]=fgets($file);
         }
         fclose($file);
-        //@unlink($this->path."update.yml");
+        //@unlink($this->path."update.cc");
         $line[]="&&eof";
         $currentInfo = [];
         foreach($line as $id=>$cc)
@@ -903,7 +899,7 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         return $finalId;
     }
 
-    public function getConfig2() {
+    public function getConfig(): Config {
         return $this->config;
     }
 

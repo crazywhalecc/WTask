@@ -21,17 +21,11 @@ class CrazyBlock extends ModBase implements Listener
     public $tempData2;
     public $moveListener = null;
 
-    /**
-     * @throws \Throwable
-     */
     public function onEnable() {
         $this->plugin = $this->getWTask();
         $desc = $this->plugin->getModule("CrazyBlock");
         $this->getServer()->getCommandMap()->register("WTask", new CrazyBlockCommand($this, $desc));
-        try {
-            $this->getServer()->getPluginManager()->registerEvents($this, $this->getWTask());
-        } catch (\Throwable $e) {
-        }
+        $this->getServer()->getPluginManager()->registerEvents($this, $this->getWTask());
         @mkdir($this->plugin->getDataFolder() . "Mods/CommandBlock/");
         $this->cb = new Config($this->plugin->getDataFolder() . "Mods/CommandBlock/" . "CommandBlock.yml", Config::YAML, array(
             "CB" => array(),

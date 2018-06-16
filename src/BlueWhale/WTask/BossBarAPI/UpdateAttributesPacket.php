@@ -4,7 +4,7 @@ namespace BlueWhale\WTask\BossBarAPI;
 
 use pocketmine\entity\Attribute;
 use pocketmine\network\protocol\DataPacket;
-use pocketmine\network\protocol\ProtocolInfo as Info;
+use pocketmine\network\protocol\Info;
 
 class UpdateAttributesPacket extends DataPacket
 {
@@ -22,7 +22,7 @@ class UpdateAttributesPacket extends DataPacket
 
     public function encode() {
         $this->reset();
-        $this->putEntityRuntimeId($this->entityId);
+        $this->putEntityId($this->entityId);
         $this->putUnsignedVarInt(count($this->entries));
         foreach ($this->entries as $entry) {
             $this->putLFloat($entry->getMinValue());
@@ -36,7 +36,7 @@ class UpdateAttributesPacket extends DataPacket
     /**
      * @return string
      */
-    public function getName(): string {
+    public function getName() {
         return "UpdateAttributesPacket";
     }
 

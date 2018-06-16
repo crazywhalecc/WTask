@@ -28,7 +28,9 @@ class MainCommand extends Command
         $this->mainHelp = "§6==WChatCommand聊天执行命令==\n§a/" . $c . " add: §b添加一个聊天执行命令项\n§a/" . $c . " del: §b删除一个聊天执行命令项";
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
+    public function execute(CommandSender $sender, $label, array $args) {
+        if (!$this->testPermission($sender))
+            return false;
         if (isset($args[0])) {
             switch ($args[0]) {
                 case "add":

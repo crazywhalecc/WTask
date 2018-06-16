@@ -3,7 +3,7 @@
 namespace BlueWhale\WTask\BossBarAPI;
 
 use pocketmine\network\protocol\DataPacket;
-use pocketmine\network\protocol\ProtocolInfo as Info;
+use pocketmine\network\protocol\Info;
 
 class SetEntityDataPacket extends DataPacket
 {
@@ -19,11 +19,11 @@ class SetEntityDataPacket extends DataPacket
 
     public function encode() {
         $this->reset();
-        $this->putEntityRuntimeId($this->eid);
+        $this->putEntityId($this->eid);
         $this->putEntityMetadata($this->metadata);
     }
 
-    public function getName(): string {
+    public function getName() {
         return "SetEntityDataPacket";
     }
 

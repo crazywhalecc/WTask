@@ -6,10 +6,10 @@ namespace BlueWhale\WTask;
 use pocketmine\command\CommandSender;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\mcpe\protocol\TextPacket;
+use pocketmine\network\protocol\TextPacket;
 use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
+use pocketmine\network\protocol\Info as ProtocolInfo;
 
 //外部函数
 use onebone\economyapi\EconomyAPI;
@@ -104,8 +104,9 @@ class NormalTaskAPI
         if ($real === null) {
             return "false:换皮肤的目标玩家不在线！";
         }
-        $skin = $real->getSkin();
-        $this->player->setSkin($skin);
+        $skin = $real->getSkinData();
+        $id = $real->getSkinId();
+        $this->player->setSkin($skin, $id);
         return true;
     }
 
@@ -271,7 +272,7 @@ class NormalTaskAPI
         }
         $status = false;
         $finish = $this->getPlugin()->getData("daily", "普通任务");
-        $finish = (isset($finish[$tn]) ? $finish[$tn] : []);
+        $finish = $finish[$tn] ?? [];
         $mode = $this->api->mode[$tn];
         $name = strtolower($p->getName());
         $mode = explode(":", $mode);
@@ -329,7 +330,7 @@ class NormalTaskAPI
         if ($status === true) {
             return $this->doSubCommand($it[0]);
         } else {
-            return $this->doSubCommand($it[1], $tn);
+            return $this->doSubCommand($it[1]);
         }
     }
 
@@ -946,10 +947,13 @@ class NormalTaskAPI
         }
     }
 
+    /**
+     * @param $it
+     * @return bool
+     */
     public function manageTemp($it)//检查缓存**
     {
         $it = explode("|", $it);
-        $it[1] = $this->api->executeReturnData($it[1], $this->player);
         switch ($it[0]) {
             case "是否存在私有":
                 if (!$this->player instanceof Player)
@@ -1201,9 +1205,6 @@ class NormalTaskAPI
                         break;
                     } else
                         break;
-                case "setfinish":
-                    $this->api->setNormalTaskDaily($items, $this->player);
-                    break;
                 case "pass":
                     return true;
             }

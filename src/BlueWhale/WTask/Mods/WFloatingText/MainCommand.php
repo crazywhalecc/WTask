@@ -28,7 +28,7 @@ class MainCommand extends Command
         $this->cmd = $desc["command"];
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
+    public function execute(CommandSender $sender, $label, array $args) {
         if (isset($args[0])) {
             switch ($args[0]) {
                 case "setdynpos":

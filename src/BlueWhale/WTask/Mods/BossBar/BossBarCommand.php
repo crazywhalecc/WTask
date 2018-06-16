@@ -30,16 +30,11 @@ class BossBarCommand extends Command
         $this->helpMsg = "§6=====WTask-BossBar帮助=====\n§a/" . $this->cmd . " 动态 [true/false]: §b开启或关闭全局动态血量条文本\n§a/" . $this->cmd . " 动态 内容 [内容]: §b设置顶部动态显示条的内容\n§a/" . $this->cmd . " 动态 百分比 [百分比值]: §b设置显示的动态顶部显示条的百分比\n§a/" . $this->cmd . " 广播: §b广播消息，通过广播条";
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
+    public function execute(CommandSender $sender, $label, array $args) {
         if (!$this->plugin->isEnabled())
             return false;
-        if (method_exists($this, "scanPermission")) {
-            if (!$this->scanPermission($sender))
-                return false;
-        } elseif (method_exists($this, "testPermission")) {
-            if (!$this->testPermission($sender))
-                return false;
-        }
+        if (!$this->testPermission($sender))
+            return false;
         if (isset($args[0])) {
             switch ($args[0]) {
                 case "动态":

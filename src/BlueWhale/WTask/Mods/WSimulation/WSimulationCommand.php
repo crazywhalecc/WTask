@@ -25,7 +25,7 @@ class WSimulationCommand extends Command
         $this->cmd = $desc["command"];
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)//解析
+    public function execute(CommandSender $sender, $label, array $args)//解析
     {
         if (!$this->mod->isEnabled())
             return false;

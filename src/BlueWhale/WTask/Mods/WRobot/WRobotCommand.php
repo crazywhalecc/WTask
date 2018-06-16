@@ -28,7 +28,7 @@ class WRobotCommand extends Command
         $this->mainHelp = "§6=====WRobot智能机器人=====\n§a/" . $c . " <true/false>: §b开启或关闭机器人\n§a/" . $c . " chat [文本]: §b直接聊天";
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)//解析
+    public function execute(CommandSender $sender, $label, array $args)//解析
     {
         if (!$this->mod->isEnabled())
             return false;

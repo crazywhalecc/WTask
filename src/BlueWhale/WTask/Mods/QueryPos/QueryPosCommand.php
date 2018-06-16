@@ -26,14 +26,9 @@ class QueryPosCommand extends Command
         $this->mod = $mod;
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
-        if (method_exists($this, "scanPermission")) {
-            if (!$this->scanPermission($sender))
-                return false;
-        } elseif (method_exists($this, "testPermission")) {
-            if (!$this->testPermission($sender))
-                return false;
-        }
+    public function execute(CommandSender $sender, $label, array $args) {
+        if (!$this->testPermission($sender))
+            return false;
         if (!$sender instanceof Player) {
             $sender->sendMessage("请在游戏内查询坐标！");
             return true;

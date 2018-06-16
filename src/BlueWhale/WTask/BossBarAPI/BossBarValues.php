@@ -1,5 +1,4 @@
 <?php
-
 namespace BlueWhale\WTask\BossBarAPI;
 class BossBarValues
 {

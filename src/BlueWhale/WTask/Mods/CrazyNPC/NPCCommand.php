@@ -18,7 +18,7 @@ use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\protocol\ProtocolInfo as Info;
+use pocketmine\network\protocol\Info;
 use pocketmine\Player;
 
 class NPCCommand extends Command
@@ -37,16 +37,11 @@ class NPCCommand extends Command
         $this->mainHelp = "§6=====CrazyNPC=====\n§a/" . $cc . " create: §b新建一个NPC\n§a/" . $cc . " remove: §b移除一个NPC\n§a/" . $cc . " see: §b查看NPC的id\n§a/" . $cc . " set [NPC的ID]: §b设置NPC\n§a/" . $cc . " list: §b显示NPC的ID列表\n§a/" . $cc . " type: §bNPC类型列表";
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)//解析
+    public function execute(CommandSender $sender, $label, array $args)//解析
     {
         $cc = $this->cmd;
-        if (method_exists($this, "scanPermission")) {
-            if (!$this->scanPermission($sender))
-                return false;
-        } elseif (method_exists($this, "testPermission")) {
-            if (!$this->testPermission($sender))
-                return false;
-        }
+        if (!$this->testPermission($sender))
+            return false;
         if (!$sender instanceof Player) {
             return false;
         }
@@ -65,7 +60,10 @@ class NPCCommand extends Command
                             return true;
                         }
                         $nbt = $this->mod->createNBT($type, $name, $sender);
-                        $entity = Entity::createEntity("Crazy" . $type, $sender->getLevel(), $nbt);
+                        if (Info::CURRENT_PROTOCOL > 101)
+                            $entity = Entity::createEntity("Crazy" . $type, $sender->getLevel(), $nbt);
+                        else
+                            $entity = Entity::createEntity("Crazy" . $type, $sender->getLevel()->getChunk($sender->getX() >> 4, $sender->getZ() >> 4), $nbt);
                         if (method_exists($entity, "setNameTag")) {
                             $entity->setNameTag($name);
                             $entity->setNameTagVisible(true);
@@ -140,7 +138,7 @@ class NPCCommand extends Command
                                         }
                                         if (isset($args[3])) {
                                             $scale = floatval($args[3]);
-                                            $entity->setScale($scale);
+                                            $entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, $scale);
                                             $entity->sendData($entity->getViewers());
                                             $sender->sendMessage("§a[CrazyNPC] 成功设置NPC大小！");
                                             return true;
@@ -155,7 +153,7 @@ class NPCCommand extends Command
                                                 $sender->sendMessage("§c[CrazyNPC] 对不起，非Human的NPC不可以佩戴装备！");
                                                 return true;
                                             }
-                                            $entity->getArmorInventory()->setHelmet($helmit);
+                                            $entity->getInventory()->setHelmet($helmit);
                                             $sender->sendMessage("§b[CrazyNPC] 成功设置NPC的装备！");
                                             return true;
                                         } else {
@@ -169,7 +167,7 @@ class NPCCommand extends Command
                                                 $sender->sendMessage("§c[CrazyNPC] 对不起，非Human的NPC不可以佩戴装备！");
                                                 return true;
                                             }
-                                            $entity->getArmorInventory()->setHelmet($shirt);
+                                            $entity->getInventory()->setHelmet($shirt);
                                             $sender->sendMessage("§b[CrazyNPC] 成功设置NPC的装备！");
                                             return true;
                                         } else {
@@ -183,7 +181,7 @@ class NPCCommand extends Command
                                                 $sender->sendMessage("§c[CrazyNPC] 对不起，非Human的NPC不可以佩戴装备！");
                                                 return true;
                                             }
-                                            $entity->getArmorInventory()->setHelmet($shoe);
+                                            $entity->getInventory()->setHelmet($shoe);
                                             $sender->sendMessage("§b[CrazyNPC] 成功设置NPC的装备！");
                                             return true;
                                         } else {
@@ -197,7 +195,7 @@ class NPCCommand extends Command
                                                 $sender->sendMessage("§c[CrazyNPC] 对不起，非Human的NPC不可以佩戴装备！");
                                                 return true;
                                             }
-                                            $entity->getArmorInventory()->setHelmet($pants);
+                                            $entity->getInventory()->setHelmet($pants);
                                             $sender->sendMessage("§b[CrazyNPC] 成功设置NPC的装备！");
                                             return true;
                                         } else {
@@ -213,7 +211,7 @@ class NPCCommand extends Command
                                             $sender->sendMessage("§c[CrazyNPC] 对不起，非Human的NPC不可以设置皮肤！");
                                             return true;
                                         }
-                                        $entity->setSkin($sender->getSkin());
+                                        $entity->setSkin($sender->getSkinData(), $sender->getSkinId());
                                         $entity->sendData($entity->getViewers());
                                         $sender->sendMessage("§a[CrazyNPC] 成功设置NPC的皮肤！");
                                         return true;

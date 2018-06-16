@@ -33,7 +33,7 @@ class ActNormalTaskCommand extends Command
         $this->mainHelp = "§6======WTask======\n§a/" . $c . " [任务名称]: §b运行普通任务";
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)//解析
+    public function execute(CommandSender $sender, $label, array $args)//解析
     {
         if (!$this->plugin->isEnabled())
             return false;

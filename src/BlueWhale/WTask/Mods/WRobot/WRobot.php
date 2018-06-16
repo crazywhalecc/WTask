@@ -24,10 +24,7 @@ class WRobot extends ModBase implements Listener
         $this->plugin = $this->getWTask();
         $desc = $this->plugin->getModule("WRobot");
         $this->getCommandMap()->register("WTask", new WRobotCommand($this, $desc));
-        try {
-            $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
-        } catch (\Throwable $e) {
-        }
+        $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
         @mkdir($this->plugin->getDataFolder() . "Mods/WRobot/");
         $this->config = new Config($this->plugin->getDataFolder() . "Mods/WRobot/" . "config.yml", Config::YAML, array(
             "status" => true,

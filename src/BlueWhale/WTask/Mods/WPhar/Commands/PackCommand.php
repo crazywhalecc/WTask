@@ -26,8 +26,8 @@ class PackCommand extends Command
         $this->cmd = $desc["command"];
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
-        if (!$this->mod->isEnabled()) {
+    public function execute(CommandSender $sender, $label, array $args) {
+        if (!$this->mod->isEnabled() || !$this->testPermission($sender)) {
             return false;
         }
         if (isset($args[0]) && isset($args[1])) {

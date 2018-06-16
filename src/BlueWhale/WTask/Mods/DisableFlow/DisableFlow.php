@@ -16,10 +16,7 @@ class DisableFlow extends ModBase implements Listener
 
     public function onEnable() {
         $this->plugin = $this->getWTask();
-        try {
-            $this->getWTask()->getServer()->getPluginManager()->registerEvents($this, $this->getWTask());
-        } catch (\Throwable $e) {
-        }
+        $this->getWTask()->getServer()->getPluginManager()->registerEvents($this, $this->getWTask());
     }
 
     public function onBlockUpdate(BlockUpdateEvent $event) {

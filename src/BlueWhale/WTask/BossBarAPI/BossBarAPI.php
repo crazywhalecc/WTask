@@ -3,9 +3,9 @@
 namespace BlueWhale\WTask\BossBarAPI;
 
 use pocketmine\Player;
-use pocketmine\network\mcpe\protocol\RemoveEntityPacket;
+use pocketmine\network\protocol\RemoveEntityPacket;
 use pocketmine\Server;
-use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\entity\Entity;
 use onebone\economyapi\EconomyAPI;
 

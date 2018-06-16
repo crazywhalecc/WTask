@@ -19,10 +19,7 @@ class WChatCommand extends ModBase implements Listener
         $this->plugin = $this->getWTask();
         $desc = $this->plugin->getModule("WChatCommand");
         $this->getCommandMap()->register("WTask", new MainCommand($this, $desc));
-        try {
-            $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
-        } catch (\Throwable $e) {
-        }
+        $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
         @mkdir($this->plugin->getDataFolder() . "Mods/WChatCommand/");
         $this->config = new Config($this->plugin->getDataFolder() . "Mods/WChatCommand/" . "config.yml", Config::YAML, array());
     }

@@ -9,7 +9,6 @@
     数据问题请加 QQ 群: 346280296
     Code for PHP 5.3+ only
 */
-
 namespace BlueWhale\extension;
 
 
@@ -40,10 +39,7 @@ class IP
         }
 
         if (self::$fp === NULL) {
-            try {
-                self::init();
-            } catch (\Exception $e) {
-            }
+            self::init();
         }
 
         $nip2 = pack('N', ip2long($nip));

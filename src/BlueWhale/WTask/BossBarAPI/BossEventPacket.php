@@ -3,7 +3,7 @@
 namespace BlueWhale\WTask\BossBarAPI;
 
 use pocketmine\network\protocol\DataPacket;
-use pocketmine\network\protocol\ProtocolInfo as Info;
+use pocketmine\network\protocol\Info;
 
 class BossEventPacket extends DataPacket
 {
@@ -19,11 +19,11 @@ class BossEventPacket extends DataPacket
 
     public function encode() {
         $this->reset();
-        $this->putEntityRuntimeId($this->eid);
+        $this->putEntityId($this->eid);
         $this->putUnsignedVarInt($this->type);
     }
 
-    public function getName(): string {
+    public function getName() {
         return "BossEventPacket";
     }
 

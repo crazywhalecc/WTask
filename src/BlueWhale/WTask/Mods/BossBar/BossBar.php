@@ -10,7 +10,7 @@ use BlueWhale\WTask\Config;
 use pocketmine\level\Location;
 use BlueWhale\WTask\BossBarAPI\BossBarAPI;
 use BlueWhale\WTask\ScheduleTasks\CallbackTask;
-use pocketmine\network\mcpe\protocol\MoveEntityPacket;
+use pocketmine\network\protocol\MoveEntityPacket;
 
 class BossBar extends ModBase implements Listener
 {
@@ -35,10 +35,7 @@ class BossBar extends ModBase implements Listener
         $this->getServer()->getCommandMap()->register("WTask", new BossBarCommand($this, $desc));
         @mkdir($this->plugin->getDataFolder() . "Mods/BossBar/");
         $this->path = $this->plugin->getDataFolder() . "Mods/BossBar/";
-        try {
-            $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
-        } catch (\Throwable $e) {
-        }
+        $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
         $this->config = new Config($this->path . "config.yml", Config::YAML, array(
             "Config-Version" => $this->currentVersion,
             "动态bar" => array(

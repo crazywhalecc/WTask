@@ -19,15 +19,10 @@ class MainCommand extends Command
         $this->Usage = "§e==========\n§a/" . $desc["command"] . " [卡密使用次数] [运行的控制台指令]: §b添加一个卡密，按照格式会自动生成\n§7*  ps：指令中玩家名字可用%p代替哦";
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args)//解析
+    public function execute(CommandSender $sender, $label, array $args)//解析
     {
-        if (method_exists($this, "scanPermission")) {
-            if (!$this->scanPermission($sender))
-                return false;
-        } elseif (method_exists($this, "testPermission")) {
-            if (!$this->testPermission($sender))
-                return false;
-        }
+        if (!$this->testPermission($sender))
+            return false;
         if (!$sender->isOp()) {
             $sender->sendMessage("§c[CrazyKey] 对不起，你不是op，不能设置卡密！");
             return true;

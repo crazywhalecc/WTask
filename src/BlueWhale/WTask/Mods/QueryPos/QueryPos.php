@@ -21,10 +21,7 @@ class QueryPos extends ModBase implements Listener
         $this->plugin = $this->getWTask();
         $desc = $this->plugin->getModule("QueryPos");
         $this->getCommandMap()->register("WTask", new QueryPosCommand($this, $desc));
-        try {
-            $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
-        } catch (\Throwable $e) {
-        }
+        $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
     }
 
     public function onTouch(PlayerInteractEvent $pig) {

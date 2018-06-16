@@ -28,8 +28,10 @@ class WProtectCommand extends Command
         $this->mainHelp = "§6==WProtect==\n§a/" . $c . " protect: §b添加或删除一个保护的地图\n§a/" . $c . " pvp: §b添加或删除一个禁止pvp的世界\n§a/" . $c . " 禁止流动: §b开启或关闭禁止液体流动\n§a/" . $c . "更改op权限: §b开启或关闭op的破坏世界权限";
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
+    public function execute(CommandSender $sender, $label, array $args) {
         if (!$this->mod->isEnabled())
+            return false;
+        if (!$this->testPermission($sender))
             return false;
         if (isset($args[0])) {
             switch ($args[0]) {
