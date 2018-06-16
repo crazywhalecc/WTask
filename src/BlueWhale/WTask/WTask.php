@@ -18,7 +18,6 @@ use BlueWhale\WTask\Mods\ModBase;
 use BlueWhale\WTask\Mods\ModManager;
 use pocketmine\command\CommandSender;
 use pocketmine\network\mcpe\protocol\TextPacket;
-use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskHandler;
@@ -79,6 +78,7 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
 
     public $currentVersion = "3.0.0";//当前版本
 
+    /** @var WTaskAPI */
     public $api = null;
 
     /** @var  ModBase */
