@@ -40,10 +40,11 @@ use pocketmine\utils\TextFormat;
 
 /*   §   */
 
-class WTask extends PluginBase//创建，插件基本功能都写在里面
+class WTask extends PluginBase
 {
-    private static $obj = null;//API接口
+    private static $obj = null;
 
+    /** @var */
     public $normalDelayer;
 
     const CONFIG_VERSION = 6;
@@ -108,14 +109,14 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         $this->currentVersion = $this->getDescription()->getVersion();
     }
 
-    public function onEnable()//启动（那个开服运行的循环任务好像也得修改）
-    {
+    /**
+     * 启动运行的函数
+     */
+    public function onEnable() {
         $this->createConfig();
         $this->registerSettings();
         $this->updateData($this->getConfig()->get("Config-Version"));//升级配置文件
         $this->registerCommands();//注册指令
-        //注册设置和监听器
-        //WTaskAPI::addNormalTask("default");
         $this->registerMods();//注册模块
 
         $this->api->loadTasks();
@@ -125,8 +126,10 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         $this->getServer()->getLogger()->notice("§a成功开启WTask v" . $this->currentVersion . " !");
     }
 
-    public function enableActTasks()//应用动作任务***已修改***
-    {
+    /**
+     * 启用动作任务的监听
+     */
+    public function enableActTasks() {
         if (!$this->api instanceof WTaskAPI)
             return;
         foreach ($this->taskData as $taskName => $taskIn) {
@@ -183,8 +186,11 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         }
     }
 
-    public function updateData($version)//升级WTask配置文件
-    {
+    /**
+     * 升级WTask配置文件
+     * @param $version
+     */
+    public function updateData($version) {
         if ($version != self::CONFIG_VERSION) {
             $this->getServer()->getLogger()->notice("正在升级配置文件...");
         }
@@ -262,16 +268,23 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
 
     }
 
-    public static function getInstance()//API创建调用
-    {
-        return self::$obj;
-    }
+    /**
+     * 返回当前实例
+     * @return null
+     */
+    public static function getInstance() { return self::$obj; }
 
-    public function getWTaskVersion()//返回WTask版本
-    {
-        return $this->getDescription()->getVersion();
-    }
+    /**
+     * 返回WTask版本
+     * @return string
+     */
+    public function getWTaskVersion() { return $this->getDescription()->getVersion(); }
 
+    /**
+     * 返回玩家的权限
+     * @param $p
+     * @return bool|int|mixed
+     */
     public function getPerm($p) {
         if ($p instanceof ConsoleCommandSender) {
             if ($this->config instanceof Config)
@@ -301,8 +314,10 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         return 1;
     }
 
-    public function createConfig()//创建配置文件
-    {
+    /**
+     * 创建配置文件
+     */
+    public function createConfig() {
         @mkdir($this->path);
         @mkdir($this->taskPath);
         @mkdir($this->path . "CustomConfig/");
@@ -453,13 +468,7 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
                 "type" => ["Command", "Listener"],
                 "version" => "1.0.0",
                 "description" => "WPhar解压压缩模块，提供便捷的phar文件解压压缩两种服务"
-            )/*,
-            "WChair" => array(
-                "status" => true,
-                "type" => ["Listener"],
-                "version" => "1.0.0",
-                "description" => "WChair坐椅子模块"
-            )*/
+            )
         ));
         $this->customCommand = new Config($this->getDataFolder() . "customCommands.json", Config::JSON, array());
         if (file_exists($this->getDataFolder() . "iPhone.json")) {
@@ -494,15 +503,23 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         }
     }
 
-    public function enableCustomCommands()//启动自定义指令
-    {
+    /**
+     * 启动自定义指令系统
+     */
+    public function enableCustomCommands() {
         foreach ($this->getCustomCommand()->getAll() as $cmdData) {
             $this->getServer()->getCommandMap()->register("WTask", new CustomCommand($this, $cmdData));
         }
     }
 
-    public function isInArea($pos, $p1, $p2)//检测是否在区域内的神奇函数
-    {
+    /**
+     * 检测是否在区域内的神奇函数
+     * @param $pos
+     * @param $p1
+     * @param $p2
+     * @return bool
+     */
+    public function isInArea($pos, $p1, $p2) {
         $pos = explode(":", $pos);
         $p1 = explode(":", $p1);
         $p2 = explode(":", $p2);
@@ -520,8 +537,13 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         return false;
     }
 
-    public function getData($type, $key)//获取配置文件数据（修改）
-    {
+    /**
+     * 获取配置文件数据（修改）
+     * @param $type
+     * @param $key
+     * @return bool|mixed|null
+     */
+    public function getData($type, $key) {
         switch ($type) {
             case "command":
                 return $this->getCommands()->get($key);
@@ -538,8 +560,11 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         }
     }
 
-    public function getPharName()//获取插件名字.phar
-    {
+    /**
+     * 获取插件名字.phar
+     * @return bool|null|string
+     */
+    public function getPharName() {
         $dir = "plugins/";
         $dh = opendir($dir);
         while ($file = readdir($dh)) {
@@ -558,11 +583,11 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
     }
 
     /**
+     * 更新模块的配置文件
      * @param $name
      * @param string $version
      */
-    public function updateModuleVersion($name, string $version)//更新模块的配置文件
-    {
+    public function updateModuleVersion($name, string $version) {
         $mod = $this->getMod()->get($name);
         //$this->getMyMods($name)->updateInfo($mod["version"]);
         $mod["version"] = $version;
@@ -571,34 +596,44 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
     }
 
     /**
+     * 回调动态函数
      * @param $tn
      * @param Player|ConsoleCommandSender $p
      * @param $delayStep
      * @param $delayTime
      */
-    public function WantToDelay($tn, $p, $delayStep, $delayTime)//回调动态函数！！（修改）
-    {
+    public function WantToDelay($tn, $p, $delayStep, $delayTime) {
         $this->normalDelayer[$p->getName()] = Server::getInstance()->getScheduler()->scheduleDelayedTask(new CallbackTask([$this, "RemoteRunNormalTask"], [$tn, $p, $delayStep]), $delayTime * 20);
     }
 
     /**
+     * 回调动态函数
      * @param $tn
      * @param CommandSender|Player $p
      * @param $delayStep
      */
-    public function RemoteRunNormalTask($tn, $p, $delayStep)//回调动态函数！！（修改）
-    {
+    public function RemoteRunNormalTask($tn, $p, $delayStep) {
         $this->api->runNormalTask($tn, $p, $delayStep);
         unset($this->normalDelayer[$p->getName()]);
     }
 
-    public function getModule($modname)//获取模块资源信息
-    {
+    /**
+     * 获取模块资源信息
+     * @param $modname
+     * @return bool|mixed
+     */
+    public function getModule($modname) {
         return $this->getMod()->get($modname);
     }
 
-    public function setData($type, $key, $m)//设置资源（修改）
-    {
+    /**
+     * 设置资源（修改）
+     * @param $type
+     * @param $key
+     * @param $m
+     * @return bool
+     */
+    public function setData($type, $key, $m) {
         switch ($type) {
             case "config":
                 $this->getConfig()->set($key, $m);
@@ -625,8 +660,11 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         }
     }
 
-    protected function registerMods()//注册所有模块
-    {
+    /**
+     * 注册所有模块
+     * @return bool
+     */
+    protected function registerMods() {
         $list = $this->getMod()->getAll();
         foreach ($list as $nm => $mb) {
             if ($mb["status"] == false)
@@ -639,8 +677,12 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         return true;
     }
 
-    public function registerMod($nm = "")//注册模块
-    {
+    /**
+     * 注册模块
+     * @param string $nm
+     * @return bool
+     */
+    public function registerMod($nm = "") {
         $class = "\\BlueWhale\\WTask\\Mods\\" . $nm . "\\" . $nm;
         $this->myMods[$nm] = new $class();
         $this->getModManager()->enableMod($this->myMods[$nm]);
@@ -648,6 +690,9 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         return true;
     }
 
+    /**
+     * 注册外部模块
+     */
     public function registerExternalMods() {
         $path = "plugins/extMods/";
         @mkdir($path);
@@ -669,8 +714,11 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         }
     }
 
-    protected function registerCommands()//注册命令
-    {
+    /**
+     * 注册WTask的指令函数
+     * @return bool
+     */
+    protected function registerCommands() {
         $data = $this->getCommands()->getAll();
         foreach ($data as $l => $ins) {
             $map = $this->getServer()->getCommandMap();
@@ -680,8 +728,10 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         return true;
     }
 
-    protected function registerSettings()//注册监听器（有待观察）（已修改？？）
-    {
+    /**
+     * 注册监听器（有待观察）（已修改？？）
+     */
+    protected function registerSettings() {
         $this->initializeDatabase();
         $this->modManager = new ModManager($this);
         if ($this->getConfig()->get("allow-ext-mod") == true) {
@@ -689,6 +739,9 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         }
     }
 
+    /**
+     * 加载外置数据库
+     */
     protected function initializeDatabase() {
         $path = $this->getDataFolder() . "database/";
         @mkdir($path);
@@ -708,6 +761,11 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         }
     }
 
+    /**
+     * 返回数据库
+     * @param string $name
+     * @return null
+     */
     public function getDatabase(string $name) {
         if (isset($this->database[$name])) {
             return $this->database[$name]->getAll();
@@ -715,6 +773,9 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         return null;
     }
 
+    /**
+     * 启动所有循环任务
+     */
     public function enableRepeatTasks() {
         foreach ($this->taskData as $taskName => $data) {
             if ($data["type"] != "循环任务")
@@ -727,15 +788,24 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         }
     }
 
-    public function preRepeatTask($taskName)//准备循环任务（（已修改）
-    {
+    /**
+     * 准备循环任务
+     * @param $taskName
+     */
+    public function preRepeatTask($taskName) {
         if ($this->taskData[$taskName]["type"] != "循环任务")
             return;
         $this->runningRepeatTaskStatus[$taskName] = $this->getServer()->getScheduler()->scheduleRepeatingTask(new CallbackTask([$this, "runRepeatTask"], [$taskName]), $this->taskData[$taskName]["repeatTime"] * 20);
     }
 
-    public function runRepeatTask($taskName, $delayStep = null, $p = null)//循环任务tick（已修改！！！）
-    {
+    /**
+     * 运行循环任务的tick回调函数
+     * @param $taskName
+     * @param null $delayStep
+     * @param null $p
+     * @return bool
+     */
+    public function runRepeatTask($taskName, $delayStep = null, $p = null) {
         $t = new RepeatTaskAPI($this->api, $taskName, $p);
         if ($delayStep == null)
             $ID = 0;
@@ -791,7 +861,12 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         return true;
     }
 
-    public function sendCommandList(CommandSender $p)//发送自定义列表
+    /**
+     * 发送自定义列表
+     * @param CommandSender $p
+     * @return bool
+     */
+    public function sendCommandList(CommandSender $p)
     {
         $cmds = $this->getCommands()->getAll();
         $p->sendMessage("§6=====WTask指令列表=====");
@@ -803,7 +878,13 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         return true;
     }
 
-    public function sendMsgPacket(Player $p, $msg, $type = 0)//发包消息
+    /**
+     * 消息发包
+     * @param Player $p
+     * @param $msg
+     * @param int $type
+     */
+    public function sendMsgPacket(Player $p, $msg, $type = 0)
     {
         switch ($type) {
             case 0:
@@ -831,6 +912,7 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
     }
 
     /**
+     * 获取任务路径
      * @return null
      */
     public function getTaskPath() {
@@ -838,12 +920,17 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
     }
 
     /**
+     * 获取延迟计时器
      * @return mixed
      */
     public function getNormalDelayer() {
         return $this->normalDelayer;
     }
 
+    /**
+     * 获取更新信息（将要遗弃）
+     * @return string
+     */
     public function getUpdateInfo() {
         $v = $this->getWTaskVersion();
         if (file_exists($this->path . "update.yml"))
@@ -855,38 +942,14 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         } else {
             return implode("\n", $cfg->get($v));
         }
-        /*
-        $file = fopen($this->path."update.yml","r");
-        $line=[];
-        while(!feof($file))
-        {
-            echo $line[]=fgets($file);
-        }
-        fclose($file);
-        //@unlink($this->path."update.yml");
-        $line[]="&&eof";
-        $currentInfo = [];
-        foreach($line as $id=>$cc)
-        {
-            if(substr($cc,0,1) == "[")
-            {
-                $executeMain = substr($cc,1,(strripos($cc,"]")-1));
-                $currentInfo[$executeMain] = [];
-                $r = $this->subUpdateInfo($line,$id);
-                for($i = $id+1;$i <= $r; $i++)
-                {
-                    $currentInfo[$executeMain][]=$line[$i];
-                }
-            }
-            else
-                continue;
-        }
-        if(!isset($currentInfo[$v]))
-            return "暂无更新日志";
-        $line = implode("",$currentInfo[$v]);
-        return $line;*/
     }
 
+    /**
+     * 更新任务信息（虽然时间长了我也不知道这个是做什么的了2333）
+     * @param $line
+     * @param $id
+     * @return int|string
+     */
     public function subUpdateInfo($line, $id) {
         $finalId = 0;
         foreach ($line as $subId => $cc) {
@@ -903,11 +966,16 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
         return $finalId;
     }
 
+    /**
+     * 获取config
+     * @return null
+     */
     public function getConfig2() {
         return $this->config;
     }
 
     /**
+     * 获取玩家权限config
      * @return mixed
      */
     public function getPlayerPerm(): Config {
@@ -915,17 +983,23 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
     }
 
     /**
+     * 获取自定义指令config
      * @return mixed
      */
     public function getCustomCommand(): Config {
         return $this->customCommand;
     }
 
+    /**
+     * 获取指令config
+     * @return Config
+     */
     public function getCommands(): Config {
         return $this->commands;
     }
 
     /**
+     * 获取模块config
      * @return mixed
      */
     public function getMod(): Config {
@@ -933,6 +1007,7 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
     }
 
     /**
+     * 获取WTask插件内可自定义文本的消息config
      * @return mixed
      */
     public function getMsg(): Config {
@@ -940,25 +1015,41 @@ class WTask extends PluginBase//创建，插件基本功能都写在里面
     }
 
     /**
+     * 获取定时任务的config
      * @return mixed
      */
     public function getDaily(): Config {
         return $this->daily;
     }
 
+    /**
+     * 获取模块实例
+     * @param string $name
+     * @return mixed
+     */
     public function getMyMods(string $name) {
         return $this->myMods[$name];
     }
 
+    /**
+     * 获取循环任务的计时器handler
+     * @param string $name
+     * @return TaskHandler
+     */
     public function getRunningRepeatTaskStatus(string $name): TaskHandler {
         return $this->runningRepeatTaskStatus[$name];
     }
 
+    /**
+     * 获取自定义功能的config
+     * @return Config
+     */
     public function getCustomFunction(): Config {
         return $this->customFunction;
     }
 
     /**
+     * 获取模块管理器实例
      * @return mixed
      */
     public function getModManager() {
