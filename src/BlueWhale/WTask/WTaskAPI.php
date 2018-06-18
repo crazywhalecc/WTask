@@ -538,14 +538,14 @@ class WTaskAPI
                         $item = $t->executeItem($item);
                         if (method_exists($t->player, "getArmorInventory"))
                             $t->player->getArmorInventory()->setBoots($item);
-                        else $t->player->getInventory()->setBoots($item);
+                        elseif (method_exists($t->player->getInventory(), 'setBoots')) $t->player->getInventory()->setBoots($item);
                         return true;
                     case "穿裤":
                         $item = $this->executeReturnData($curDat[1], $t->player);
                         $item = $t->executeItem($item);
                         if (method_exists($t->player, "getArmorInventory"))
                             $t->player->getArmorInventory()->setLeggings($item);
-                        else $t->player->getInventory()->setLeggings($item);
+                        elseif (method_exists($t->player->getInventory(), 'setLeggings')) $t->player->getInventory()->setLeggings($item);
                         return true;
                     case "kick":
                         $t->player->kick();
@@ -558,14 +558,14 @@ class WTaskAPI
                         $item = $t->executeItem($item);
                         if (method_exists($t->player, "getArmorInventory"))
                             $t->player->getArmorInventory()->setChestplate($item);
-                        else $t->player->getInventory()->setChestplate($item);
+                        elseif (method_exists($t->player->getInventory(), 'setChestplate')) $t->player->getInventory()->setChestplate($item);
                         return true;
                     case "戴头盔":
                         $item = $this->executeReturnData($curDat[1], $t->player);
                         $item = $t->executeItem($item);
                         if (method_exists($t->player, "getArmorInventory"))
                             $t->player->getArmorInventory()->setHelmet($item);
-                        else $t->player->getInventory()->setHelmet($item);
+                        elseif (method_exists($t->player->getInventory(), 'setHelmet')) $t->player->getInventory()->setHelmet($item);
                         return true;
                     case "皮肤伪装":
                         return $t->setCustomSkin($curDat[1]);
@@ -649,7 +649,7 @@ class WTaskAPI
                     return false;
                 }
                 foreach ($this->plugin->getCustomFunction()->getAll() as $functionName => $func) {
-                    return true; // TODO
+                    return true;
                 }
                 return false;
         }
@@ -837,21 +837,21 @@ class WTaskAPI
                         $itemheld = $p->getInventory()->getItemInHand()->getCount();
                         return $itemheld;
                     case "鞋子id":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getBoots()->getId() : $p->getInventory()->getBoots()->getId();
+                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getBoots()->getId() : (method_exists($p->getInventory(), "getBoots") ? $p->getInventory()->getBoots()->getId() : 0);
                     case "鞋子damage":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getBoots()->getDamage() : $p->getInventory()->getBoots()->getDamage();
+                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getBoots()->getDamage() : (method_exists($p->getInventory(), "getBoots") ? $p->getInventory()->getBoots()->getDamage() : 0);
                     case "裤子id":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getLeggings()->getId() : $p->getInventory()->getLeggings()->getId();
+                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getLeggings()->getId() : (method_exists($p->getInventory(), "getLeggings") ? $p->getInventory()->getLeggings()->getId() : 0);
                     case "裤子damage":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getLeggings()->getDamage() : $p->getInventory()->getLeggings()->getDamage();
+                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getLeggings()->getDamage() : (method_exists($p->getInventory(), "getLeggings") ? $p->getInventory()->getLeggings()->getDamage() : 0);
                     case "衣服id":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getChestplate()->getId() : $p->getInventory()->getChestplate()->getId();
+                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getChestplate()->getId() : (method_exists($p->getInventory(), "getChestplate") ? $p->getInventory()->getChestplate()->getId() : 0);
                     case "衣服damage":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getChestplate()->getDamage() : $p->getInventory()->getChestplate()->getDamage();
+                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getChestplate()->getDamage() : (method_exists($p->getInventory(), "getChestplate") ? $p->getInventory()->getChestplate()->getDamage() : 0);
                     case "头盔id":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getHelmet()->getId() : $p->getInventory()->getHelmet()->getId();
+                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getHelmet()->getId() : (method_exists($p->getInventory(), "getHelmet") ? $p->getInventory()->getHelmet()->getId() : 0);
                     case "头盔damage":
-                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getHelmet()->getDamage() : $p->getInventory()->getHelmet()->getDamage();
+                        return method_exists($p, "getArmorInventory") ? $p->getArmorInventory()->getHelmet()->getDamage() : (method_exists($p->getInventory(), "getHelmet") ? $p->getInventory()->getHelmet()->getDamage() : 0);
                     case "金钱":
                         return EconomyAPI::getInstance()->myMoney($p);
                     case "名字":
