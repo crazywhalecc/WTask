@@ -270,7 +270,7 @@ class WTask extends PluginBase
 
     /**
      * 返回当前实例
-     * @return null
+     * @return WTask|null
      */
     public static function getInstance() { return self::$obj; }
 
