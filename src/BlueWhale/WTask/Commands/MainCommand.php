@@ -31,26 +31,28 @@ class MainCommand extends Command
         $this->cmd = $desc["command"];
         $c = $this->cmd;
         $this->ids = 0;
-        $this->cmdHelp[0] = "§6======WTask主菜单(§a1 §6/ §e3§6)======
-§7*  当前版本: " . $this->plugin->getWTaskVersion() . "
-§7*  翻页: /" . $this->cmd . " help [页数]
-§e*  输入/wtask info 来查看当前版本的更新日志哦～
-§a/" . $c . " 添加任务: §b添加一个普通型任务
-§a/" . $c . " reload: §b重新载入所有内容
-§a/" . $c . " 创建配置文件: §b创建一个自定义的空白配置文件
-§a/" . $c . " reload [自定义配置文件名称]: §b重载自定义配置文件
-§a/" . $c . " info: §b关于WTask插件及版权";
-        $this->cmdHelp[1] = "§6======WTask主菜单(§a2 §6/ §e3§6)======
-§a/" . $c . " 权限: §b设置玩家权限
-§a/" . $c . " 添加循环任务: §b添加一个循环型任务
-§a/" . $c . " 停止循环任务: §b停止一个正在运行的循环任务
-§a/" . $c . " cmdlist: §b查看其他WTask所有相关指令列表
-§a/" . $c . " 删除所有配置文件: §b清空所有WTask数据";
-        $this->cmdHelp[2] = "§6======WTask主菜单(§a3 §6/ §e3§6)======
-§a/" . $c . " 添加动作任务: §b添加一个监听（动作）执行的普通任务
-§a/" . $c . " 任务列表: §b查看任务的列表
-§a/" . $c . " 创建指令: §b创建一个自定义指令
-§a/" . $c . " 设置自定义指令: §b设置一个自定义指令";
+        $this->cmdHelp[0] = "§6======WTask主菜单(§a1 §6/ §e3§6)======";
+        $this->cmdHelp[0] .= "\n§7*  当前版本: " . $this->plugin->getWTaskVersion();
+        $this->cmdHelp[0] .= "\n§7*  翻页: /" . $this->cmd . " help [页数]";
+        $this->cmdHelp[0] .= "\n§e*  输入/wtask info 来查看当前版本的更新日志哦～";
+        $this->cmdHelp[0] .= "\n§a/" . $c . " 添加任务: §b添加一个普通型任务";
+        $this->cmdHelp[0] .= "\n§a/" . $c . " reload: §b重新载入所有内容";
+        $this->cmdHelp[0] .= "\n§a/" . $c . " 创建配置文件: §b创建一个自定义的空白配置文件";
+        $this->cmdHelp[0] .= "\n§a/" . $c . " reload [自定义配置文件名称]: §b重载自定义配置文件";
+        $this->cmdHelp[0] .= "\n§a/" . $c . " info: §b关于WTask插件及版权";
+
+        $this->cmdHelp[1] = "§6======WTask主菜单(§a2 §6/ §e3§6)======";
+        $this->cmdHelp[1] .= "\n§a/" . $c . " 权限: §b设置玩家权限";
+        $this->cmdHelp[1] .= "\n§a/" . $c . " 添加循环任务: §b添加一个循环型任务";
+        $this->cmdHelp[1] .= "\n§a/" . $c . " 停止循环任务: §b停止一个正在运行的循环任务";
+        $this->cmdHelp[1] .= "\n§a/" . $c . " cmdlist: §b查看其他WTask所有相关指令列表";
+        $this->cmdHelp[1] .= "\n§a/" . $c . " 删除所有配置文件: §b清空所有WTask数据";
+
+        $this->cmdHelp[2] = "§6======WTask主菜单(§a3 §6/ §e3§6)======";
+        $this->cmdHelp[2] .= "§a/" . $c . " 添加动作任务: §b添加一个监听（动作）执行的普通任务";
+        $this->cmdHelp[2] .= "§a/" . $c . " 任务列表: §b查看任务的列表";
+        $this->cmdHelp[2] .= "§a/" . $c . " 创建指令: §b创建一个自定义指令";
+        $this->cmdHelp[2] .= "§a/" . $c . " 设置自定义指令: §b设置一个自定义指令";
     }
 
     public function selectColor($t) {
