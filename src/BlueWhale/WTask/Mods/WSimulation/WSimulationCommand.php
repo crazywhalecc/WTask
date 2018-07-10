@@ -34,16 +34,12 @@ class WSimulationCommand extends Command
         if (isset($args[0]) && isset($args[1])) {
             if (substr($args[0], 0, 3) == "op:") {
                 $playermode = 1;
+                $args[0] = substr($args[0], 3);
             } else
                 $playermode = 0;
             $player = $this->mod->getServer()->getPlayerExact($args[0]);
-            $i = 1;
-            $cmd = [];
-            while (isset($args[$i])) {
-                $cmd[] = $args[$i];
-                $i++;
-            }
-            $cmd = implode(" ", $cmd);
+            array_shift($args);
+            $cmd = implode(" ", $args);
             if ($player === null) {
                 $sender->sendMessage("§e[WSimulation] 对不起，玩家不在线！");
                 return true;

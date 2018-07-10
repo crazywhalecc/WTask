@@ -98,8 +98,7 @@ class WTask extends PluginBase
     public $path = null;
     public $taskPath = null;
 
-    public function onLoad()//加载
-    {
+    public function onLoad() {
         $this->api = new WTaskAPI($this);
         $this->getServer()->getLoader()->addPath("plugins/extMods/");
         self::$obj = $this;
@@ -866,8 +865,7 @@ class WTask extends PluginBase
      * @param CommandSender $p
      * @return bool
      */
-    public function sendCommandList(CommandSender $p)
-    {
+    public function sendCommandList(CommandSender $p) {
         $cmds = $this->getCommands()->getAll();
         $p->sendMessage("§6=====WTask指令列表=====");
         foreach ($cmds as $cmd => $dat) {
@@ -884,8 +882,7 @@ class WTask extends PluginBase
      * @param $msg
      * @param int $type
      */
-    public function sendMsgPacket(Player $p, $msg, $type = 0)
-    {
+    public function sendMsgPacket(Player $p, $msg, $type = 0) {
         switch ($type) {
             case 0:
                 $pk = new TextPacket;

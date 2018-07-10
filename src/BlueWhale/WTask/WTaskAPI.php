@@ -1176,8 +1176,7 @@ class WTaskAPI
         return $ar;
     }
 
-    public function deldir($dir) //删除文件夹和内容的函数
-    {
+    public function deldir($dir) {
         $dh = opendir($dir);
         while ($file = readdir($dh)) {
             if ($file != "." && $file != "..") {
